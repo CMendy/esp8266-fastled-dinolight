@@ -34,21 +34,15 @@ extern "C" {
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <ESP8266HTTPClient.h>
-//#include <WebSocketsServer.h>
+
 #include <FS.h>
 #include <EEPROM.h>
-//#include <IRremoteESP8266.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager/tree/development
 #include "GradientPalettes.h"
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
 #include "Field.h"
-
-//#define RECV_PIN D4
-//IRrecv irReceiver(RECV_PIN);
-
-//#include "Commands.h"
 
 WiFiManager wifiManager;
 ESP8266WebServer webServer(80);
@@ -63,18 +57,16 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
 #include "FSBrowser.h"
 
-#define DATA_PIN D5
+#define DATA_PIN 2
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
-#define NUM_LEDS 256
+#define NUM_LEDS 16
 #define NUM_LEDS_3 NUM_LEDS * 3
 
-#define MILLI_AMPS 2000       // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
+#define MILLI_AMPS 900       // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
 #define FRAMES_PER_SECOND 120 // here you can control the speed. With the Access Point / Web Server the animations run a bit slower.
 
 String nameString;
-
-#include "Ping.h"
 
 CRGB leds[NUM_LEDS];
 
@@ -400,8 +392,6 @@ void setup() {
   webServer.on("/cooling", HTTP_POST, []() {
     String value = webServer.arg("value");
     cooling = value.toInt();
-    EEPROM.write(11, cooling);
-    EEPROM.commit();
     broadcastInt("cooling", cooling);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(cooling);
@@ -410,8 +400,6 @@ void setup() {
   webServer.on("/sparking", HTTP_POST, []() {
     String value = webServer.arg("value");
     sparking = value.toInt();
-    EEPROM.write(12, sparking);
-    EEPROM.commit();
     broadcastInt("sparking", sparking);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(sparking);
@@ -430,8 +418,6 @@ void setup() {
     twinkleSpeed = value.toInt();
     if (twinkleSpeed < 0) twinkleSpeed = 0;
     else if (twinkleSpeed > 8) twinkleSpeed = 8;
-    EEPROM.write(9, twinkleSpeed);
-    EEPROM.commit();
     broadcastInt("twinkleSpeed", twinkleSpeed);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(twinkleSpeed);
@@ -442,22 +428,9 @@ void setup() {
     twinkleDensity = value.toInt();
     if (twinkleDensity < 0) twinkleDensity = 0;
     else if (twinkleDensity > 8) twinkleDensity = 8;
-    EEPROM.write(10, twinkleDensity);
-    EEPROM.commit();
     broadcastInt("twinkleDensity", twinkleDensity);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(twinkleDensity);
-  });
-
-  webServer.on("/coolLikeIncandescent", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    coolLikeIncandescent = value.toInt();
-    if (coolLikeIncandescent < 0) coolLikeIncandescent = 0;
-    else if (coolLikeIncandescent > 1) coolLikeIncandescent = 1;
-    EEPROM.write(13, coolLikeIncandescent);
-    EEPROM.commit();
-    broadcastInt("coolLikeIncandescent", coolLikeIncandescent);
-    sendInt(coolLikeIncandescent);
   });
 
   webServer.on("/solidColor", HTTP_POST, []() {
@@ -940,13 +913,6 @@ void loadSettings()
 
   showClock = EEPROM.read(9);
   clockBackgroundFade = EEPROM.read(10);
-  twinkleSpeed = EEPROM.read(9);
-  twinkleDensity = EEPROM.read(10);
-
-  cooling = EEPROM.read(11);
-  sparking = EEPROM.read(12);
-
-  coolLikeIncandescent = EEPROM.read(13);
 }
 
 void setPower(uint8_t value)
