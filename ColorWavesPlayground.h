@@ -50,8 +50,6 @@ void colorwavesPlayground( CRGB* ledarray, uint16_t numleds, CRGBPalette16& pale
     CRGB newcolor = ColorFromPalette( palette, index, bri8);
 
     uint16_t pixelnumber = i;
-    
-    if (useFibonacciOrder) pixelnumber = fibonacciToPhysical[i];
 
     pixelnumber = (numleds - 1) - pixelnumber;
 

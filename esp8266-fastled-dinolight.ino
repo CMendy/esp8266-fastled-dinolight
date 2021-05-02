@@ -167,10 +167,7 @@ typedef PatternAndName PatternAndNameList[];
 
 #include "Twinkles.h"
 #include "TwinkleFOX.h"
-#include "Map.h"
-#include "Noise.h"
 #include "Pacifica.h"
-#include "PacificaFibonacci.h"
 #include "PridePlayground.h"
 #include "ColorWavesPlayground.h"
 
@@ -178,66 +175,10 @@ typedef PatternAndName PatternAndNameList[];
 
 PatternAndNameList patterns = {
   { pride,                  "Pride" },
-  { prideFibonacci,         "Pride Fibonacci" },
   { colorWaves,             "Color Waves" },
-  { colorWavesFibonacci,    "Color Waves Fibonacci" },
-
    { pridePlayground,         "Pride Playground" },
-  { pridePlaygroundFibonacci, "Pride Playground Fibonacci" },
-
-  { colorWavesPlayground,          "Color Waves Playground" },
-  { colorWavesPlaygroundFibonacci, "Color Waves Playground Fibonacci" },
-
-  { wheel, "Wheel" },
-
-  { swirlFibonacci, "Swirl Fibonacci"},
-  { fireFibonacci, "Fire Fibonacci" },
-  { waterFibonacci, "Water Fibonacci" },
-  { emitterFibonacci, "Emitter Fibonacci" },
-
-  { pacifica_loop,           "Pacifica" },
-  { pacifica_fibonacci_loop, "Pacifica Fibonacci" },
-
-  // matrix patterns
-  { anglePalette,  "Angle Palette" },
-  { radiusPalette,  "Radius Palette" },
-  { xPalette,  "X Axis Palette" },
-  { yPalette,  "Y Axis Palette" },
-  { xyPalette, "XY Axis Palette" },
-
-  { angleGradientPalette,  "Angle Gradient Palette" },
-  { radiusGradientPalette,  "Radius Gradient Palette" },
-  { xGradientPalette,  "X Axis Gradient Palette" },
-  { yGradientPalette,  "Y Axis Gradient Palette" },
-  { xyGradientPalette, "XY Axis Gradient Palette" },
-
-   // noise patterns
-   { fireNoise, "Fire Noise" },
-   { fireNoise2, "Fire Noise 2" },
-   { lavaNoise, "Lava Noise" },
-   { rainbowNoise, "Rainbow Noise" },
-   { rainbowStripeNoise, "Rainbow Stripe Noise" },
-   { partyNoise, "Party Noise" },
-   { forestNoise, "Forest Noise" },
-   { cloudNoise, "Cloud Noise" },
-   { oceanNoise, "Ocean Noise" },
-   { blackAndWhiteNoise, "Black & White Noise" },
-   { blackAndBlueNoise, "Black & Blue Noise" },
-
-  { drawAnalogClock, "Analog Clock" },
-
-  { drawSpiralAnalogClock13,  "Spiral Analog Clock 13" },
-  { drawSpiralAnalogClock21,  "Spiral Analog Clock 21" },
-  { drawSpiralAnalogClock34,  "Spiral Analog Clock 34" },
-  { drawSpiralAnalogClock55,  "Spiral Analog Clock 55" },
-  { drawSpiralAnalogClock89,  "Spiral Analog Clock 89" },
-
-  { drawSpiralAnalogClock21and34, "Spiral Analog Clock 21 & 34"},
-  { drawSpiralAnalogClock13_21_and_34, "Spiral Analog Clock 13, 21 & 34"},
-  { drawSpiralAnalogClock34_21_and_13, "Spiral Analog Clock 34, 21 & 13"},
-
-  { pridePlayground,        "Pride Playground" },
   { colorWavesPlayground,   "Color Waves Playground" },
+  { pacifica_loop,          "Pacifica" },
 
   // twinkle patterns
   { rainbowTwinkles,        "Rainbow Twinkles" },
@@ -335,7 +276,7 @@ void setup() {
                  String(mac[WL_MAC_ADDR_LENGTH - 1], HEX);
   macID.toUpperCase();
 
-  nameString = "Fibonacci256-" + macID;
+  nameString = "Ava-" + macID;
 
   char nameChar[nameString.length() + 1];
   memset(nameChar, 0, nameString.length() + 1);
@@ -591,8 +532,6 @@ void loop() {
     }
   }
 
-  checkPingTimer();
-
   //  handleIrInput();
 
   if (power == 0) {
@@ -626,257 +565,11 @@ void loop() {
   // Call the current pattern function once, updating the 'leds' array
   patterns[currentPatternIndex].pattern();
 
-  if (showClock) drawAnalogClock();
-
   FastLED.show();
 
   // insert a delay to keep the framerate modest
   delay(1000 / FRAMES_PER_SECOND);
 }
-
-//void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
-//
-//  switch (type) {
-//    case WStype_DISCONNECTED:
-//      Serial.printf("[%u] Disconnected!\n", num);
-//      break;
-//
-//    case WStype_CONNECTED:
-//      {
-//        IPAddress ip = webSocketsServer.remoteIP(num);
-//        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-//
-//        // send message to client
-//        // webSocketsServer.sendTXT(num, "Connected");
-//      }
-//      break;
-//
-//    case WStype_TEXT:
-//      Serial.printf("[%u] get Text: %s\n", num, payload);
-//
-//      // send message to client
-//      // webSocketsServer.sendTXT(num, "message here");
-//
-//      // send data to all connected clients
-//      // webSocketsServer.broadcastTXT("message here");
-//      break;
-//
-//    case WStype_BIN:
-//      Serial.printf("[%u] get binary length: %u\n", num, length);
-//      hexdump(payload, length);
-//
-//      // send message to client
-//      // webSocketsServer.sendBIN(num, payload, lenght);
-//      break;
-//  }
-//}
-
-//void handleIrInput()
-//{
-//  InputCommand command = readCommand();
-//
-//  if (command != InputCommand::None) {
-//    Serial.print("command: ");
-//    Serial.println((int) command);
-//  }
-//
-//  switch (command) {
-//    case InputCommand::Up: {
-//        adjustPattern(true);
-//        break;
-//      }
-//    case InputCommand::Down: {
-//        adjustPattern(false);
-//        break;
-//      }
-//    case InputCommand::Power: {
-//        setPower(power == 0 ? 1 : 0);
-//        break;
-//      }
-//    case InputCommand::BrightnessUp: {
-//        adjustBrightness(true);
-//        break;
-//      }
-//    case InputCommand::BrightnessDown: {
-//        adjustBrightness(false);
-//        break;
-//      }
-//    case InputCommand::PlayMode: { // toggle pause/play
-//        setAutoplay(!autoplay);
-//        break;
-//      }
-//
-//    // pattern buttons
-//
-//    case InputCommand::Pattern1: {
-//        setPattern(0);
-//        break;
-//      }
-//    case InputCommand::Pattern2: {
-//        setPattern(1);
-//        break;
-//      }
-//    case InputCommand::Pattern3: {
-//        setPattern(2);
-//        break;
-//      }
-//    case InputCommand::Pattern4: {
-//        setPattern(3);
-//        break;
-//      }
-//    case InputCommand::Pattern5: {
-//        setPattern(4);
-//        break;
-//      }
-//    case InputCommand::Pattern6: {
-//        setPattern(5);
-//        break;
-//      }
-//    case InputCommand::Pattern7: {
-//        setPattern(6);
-//        break;
-//      }
-//    case InputCommand::Pattern8: {
-//        setPattern(7);
-//        break;
-//      }
-//    case InputCommand::Pattern9: {
-//        setPattern(8);
-//        break;
-//      }
-//    case InputCommand::Pattern10: {
-//        setPattern(9);
-//        break;
-//      }
-//    case InputCommand::Pattern11: {
-//        setPattern(10);
-//        break;
-//      }
-//    case InputCommand::Pattern12: {
-//        setPattern(11);
-//        break;
-//      }
-//
-//    // custom color adjustment buttons
-//
-//    case InputCommand::RedUp: {
-//        solidColor.red += 8;
-//        setSolidColor(solidColor);
-//        break;
-//      }
-//    case InputCommand::RedDown: {
-//        solidColor.red -= 8;
-//        setSolidColor(solidColor);
-//        break;
-//      }
-//    case InputCommand::GreenUp: {
-//        solidColor.green += 8;
-//        setSolidColor(solidColor);
-//        break;
-//      }
-//    case InputCommand::GreenDown: {
-//        solidColor.green -= 8;
-//        setSolidColor(solidColor);
-//        break;
-//      }
-//    case InputCommand::BlueUp: {
-//        solidColor.blue += 8;
-//        setSolidColor(solidColor);
-//        break;
-//      }
-//    case InputCommand::BlueDown: {
-//        solidColor.blue -= 8;
-//        setSolidColor(solidColor);
-//        break;
-//      }
-//
-//    // color buttons
-//
-//    case InputCommand::Red: {
-//        setSolidColor(CRGB::Red);
-//        break;
-//      }
-//    case InputCommand::RedOrange: {
-//        setSolidColor(CRGB::OrangeRed);
-//        break;
-//      }
-//    case InputCommand::Orange: {
-//        setSolidColor(CRGB::Orange);
-//        break;
-//      }
-//    case InputCommand::YellowOrange: {
-//        setSolidColor(CRGB::Goldenrod);
-//        break;
-//      }
-//    case InputCommand::Yellow: {
-//        setSolidColor(CRGB::Yellow);
-//        break;
-//      }
-//
-//    case InputCommand::Green: {
-//        setSolidColor(CRGB::Green);
-//        break;
-//      }
-//    case InputCommand::Lime: {
-//        setSolidColor(CRGB::Lime);
-//        break;
-//      }
-//    case InputCommand::Aqua: {
-//        setSolidColor(CRGB::Aqua);
-//        break;
-//      }
-//    case InputCommand::Teal: {
-//        setSolidColor(CRGB::Teal);
-//        break;
-//      }
-//    case InputCommand::Navy: {
-//        setSolidColor(CRGB::Navy);
-//        break;
-//      }
-//
-//    case InputCommand::Blue: {
-//        setSolidColor(CRGB::Blue);
-//        break;
-//      }
-//    case InputCommand::RoyalBlue: {
-//        setSolidColor(CRGB::RoyalBlue);
-//        break;
-//      }
-//    case InputCommand::Purple: {
-//        setSolidColor(CRGB::Purple);
-//        break;
-//      }
-//    case InputCommand::Indigo: {
-//        setSolidColor(CRGB::Indigo);
-//        break;
-//      }
-//    case InputCommand::Magenta: {
-//        setSolidColor(CRGB::Magenta);
-//        break;
-//      }
-//
-//    case InputCommand::White: {
-//        setSolidColor(CRGB::White);
-//        break;
-//      }
-//    case InputCommand::Pink: {
-//        setSolidColor(CRGB::Pink);
-//        break;
-//      }
-//    case InputCommand::LightPink: {
-//        setSolidColor(CRGB::LightPink);
-//        break;
-//      }
-//    case InputCommand::BabyBlue: {
-//        setSolidColor(CRGB::CornflowerBlue);
-//        break;
-//      }
-//    case InputCommand::LightBlue: {
-//        setSolidColor(CRGB::LightBlue);
-//        break;
-//      }
-//  }
-//}
 
 void loadSettings()
 {
@@ -1192,10 +885,6 @@ void pride() {
   fillWithPride(false);
 }
 
-void prideFibonacci() {
-  fillWithPride(true);
-}
-
 void fillWithPride(bool useFibonacciOrder) {
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
@@ -1231,26 +920,9 @@ void fillWithPride(bool useFibonacciOrder) {
 
     uint16_t pixelnumber = i;
 
-    if (useFibonacciOrder) pixelnumber = fibonacciToPhysical[i];
-
     pixelnumber = (NUM_LEDS - 1) - pixelnumber;
 
     nblend( leds[pixelnumber], newcolor, 64);
-  }
-}
-
-void radialPaletteShift()
-{
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    // leds[i] = ColorFromPalette( gCurrentPalette, gHue + sin8(i*16), brightness);
-    leds[fibonacciToPhysical[i]] = ColorFromPalette(gCurrentPalette, i + gHue, 255, LINEARBLEND);
-  }
-}
-
-void radialPaletteShiftOutward()
-{
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    leds[fibonacciToPhysical[i]] = ColorFromPalette(gCurrentPalette, i - gHue, 255, LINEARBLEND);
   }
 }
 
@@ -1327,17 +999,13 @@ uint8_t beatsaw8( accum88 beats_per_minute, uint8_t lowest = 0, uint8_t highest 
 }
 
 void colorWaves() {
-  fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette, false);
-}
-
-void colorWavesFibonacci() {
-  fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette, true);
+  fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette);
 }
 
 // ColorWavesWithPalettes by Mark Kriegsman: https://gist.github.com/kriegsman/8281905786e8b2632aeb
 // This function draws color waves with an ever-changing,
 // widely-varying set of parameters, using a color palette.
-void fillWithColorWaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette, bool useFibonacciOrder)
+void fillWithColorWaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette)
 {
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
@@ -1383,8 +1051,6 @@ void fillWithColorWaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palett
 
     uint16_t pixelnumber = i;
 
-    if (useFibonacciOrder) pixelnumber = fibonacciToPhysical[i];
-
     pixelnumber = (numleds - 1) - pixelnumber;
 
     nblend( ledarray[pixelnumber], newcolor, 128);
@@ -1398,96 +1064,6 @@ void palettetest( CRGB* ledarray, uint16_t numleds, const CRGBPalette16& gCurren
   static uint8_t startindex = 0;
   startindex--;
   fill_palette( ledarray, numleds, startindex, (256 / NUM_LEDS) + 1, gCurrentPalette, 255, LINEARBLEND);
-}
-
-void swirlFibonacci() {
-
-  const float z = 2.5; // zoom (2.0)
-  const float w = 3.0; // number of wings (3)
-  const float p_min = 0.1; const float p_max = 2.0; // puff up (default: 1.0)
-  const float d_min = 0.1; const float d_max = 2.0; // dent (default: 0.5)
-  const float s_min = -3.0; const float s_max = 2.0; // swirl (default: -2.0)
-  const float g_min = 0.1; const float g_max = 0.5; // glow (default: 0.2)
-  const float b = 240; // inverse brightness (240)
-
-  const float p = p_min + beatsin88(13*speed) / (float)UINT16_MAX * (p_max - p_min);
-  const float d = d_min + beatsin88(17*speed) / (float)UINT16_MAX * (d_max - d_min);
-  const float s = s_min + beatsin88(7*speed) / (float)UINT16_MAX * (s_max - s_min);
-  const float g = g_min + beatsin88(27*speed) / (float)UINT16_MAX * (g_max - g_min);
-
-  CRGBPalette16 palette( gGradientPalettes[1] ); // es_rivendell_15_gp
-
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    float r = physicalToFibonacci[i] / 256.0 * z;
-    float a = (angles[i] + (beat88(3*speed)>>3)) / 256.0 * TWO_PI;
-    float v = r - p + d * sin(w * a + s * r * r);
-    float c = 255 - b * pow(fabs(v), g);
-    if (c < 0) c = 0;
-    else if (c > 255) c = 255;
-
-    leds[i] = ColorFromPalette(palette, (uint8_t)c);
-  }
-}
-
-void fireFibonacci() {
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    uint16_t x = coordsX[i];
-    uint16_t y = coordsY[i];
-
-    uint8_t n = qsub8( inoise8((x << 2) - beat88(speed << 2), (y << 2)), x );
-
-    leds[i] = ColorFromPalette(HeatColors_p, n);
-  }
-}
-
-void waterFibonacci() {
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
-    uint16_t x = coordsX[i];
-    uint16_t y = coordsY[i];
-
-    uint8_t n = inoise8((x << 2) + beat88(speed << 2), (y << 4));
-
-    leds[i] = ColorFromPalette(IceColors_p, n);
-  }
-}
-
-/**
- * Emits arcs of color spreading out from the center to the edge of the disc.
- */
-void emitterFibonacci() {
-  static CRGB ledBuffer[NUM_LEDS]; // buffer for better fade behavior
-  const uint8_t dAngle = 32; // angular span of the traces
-  const uint8_t dRadius = 12; // radial width of the traces
-  const uint8_t vSpeed = 16; // max speed variation
-
-  static const uint8_t eCount = 7; // Number of simultanious traces
-  static uint8_t angle[eCount]; // individual trace angles
-  static uint16_t timeOffset[eCount]; // individual offsets from beat8() function
-  static uint8_t speedOffset[eCount]; // individual speed offsets limited by vSpeed
-  static uint8_t sparkIdx = 0; // randomizer cycles through traces to spark new ones
-
-  // spark new trace
-  EVERY_N_MILLIS(20) {
-    if (random8(17) <= (speed >> 4)) { // increase change rate for higher speeds
-      angle[sparkIdx] = random8();
-      speedOffset[sparkIdx] = random8(vSpeed); // individual speed variation
-      timeOffset[sparkIdx] = beat8(qadd8(speed,speedOffset[sparkIdx]));
-      sparkIdx = addmod8(sparkIdx, 1, eCount); // continue randomizer at next spark
-    }
-  }
-
-  // fade traces
-  fadeToBlackBy( ledBuffer, NUM_LEDS, 6 + (speed >> 3));
-
-  // draw traces
-  for (uint8_t e = 0; e < eCount; e++) {
-    uint8_t startRadius = sub8(beat8(qadd8(speed, speedOffset[e])), timeOffset[e]);
-    uint8_t endRadius = add8(startRadius, dRadius + (speed>>5)); // increase radial width for higher speeds
-    antialiasPixelAR(angle[e], dAngle, startRadius, endRadius, ColorFromPalette(gCurrentPalette, startRadius), ledBuffer);
-  }
-
-  // copy buffer to actual strip
-  memcpy(leds, ledBuffer, NUM_LEDS_3);
 }
 
 void wheel() {

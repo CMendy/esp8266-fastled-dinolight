@@ -67,8 +67,6 @@ void fillWithPridePlayground(bool useFibonacciOrder)
 
     uint16_t pixelnumber = i;
 
-    if (useFibonacciOrder) pixelnumber = fibonacciToPhysical[i];
-
     pixelnumber = (NUM_LEDS - 1) - pixelnumber;
 
     nblend(leds[pixelnumber], newcolor, 64);
